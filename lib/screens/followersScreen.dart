@@ -38,10 +38,10 @@ class _FollowersDetailsScreenState extends State<FollowersDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Followers'),
+        title: const Text('Followers'),
       ),
       body: followers == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -65,20 +65,15 @@ class _FollowersDetailsScreenState extends State<FollowersDetailsScreen> {
                                       followers[index]['avatar_url']),
                                 ),
                                 title: Text(followers[index]['login'],
-                                    style: TextStyle(color: Colors.black)),
+                                    style: const TextStyle(color: Colors.black)),
                                 subtitle: Text(
-                                    '${followers[index]["html_url"].toString()}',
-                                    style: TextStyle(color: Colors.black)),
+                                    followers[index]["html_url"].toString(),
+                                    style: const TextStyle(color: Colors.black)),
                               ),
                             ),
                           )
-                        // ListView.builder(
-                        //     itemCount: items.length,
-                        //     itemBuilder: (BuildContext context, int index){
-                        //
-                        //     })
 
-                        : Center(child: CircularProgressIndicator()),
+                        : const Center(child: CircularProgressIndicator()),
                   )
                 ],
               )),

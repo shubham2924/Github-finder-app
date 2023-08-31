@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import './followersScreen.dart';
 import 'package:intl/intl.dart';
@@ -50,12 +49,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const fontSize=18.0;
+    const sizedBoxHeight=20.0;
     return Scaffold(
         appBar: AppBar(
-          title: Text('User Details'),
+          title: const Text('User Details'),
         ),
         body: userData == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 child: Center(
                   child: Column(
@@ -68,58 +69,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           radius: 120.0,
                         ),
                       ),
-                      SizedBox(height: 40.0),
+                      const SizedBox(height: 40.0),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text('Name: ${userData!['name'] ?? "NA"}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text('Company: ${userData!['company'] ?? "NA"}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text('Blog: ${userData!['blog'] ?? "NA"}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text('Bio: ${userData!['bio'] ?? "NA"}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                             'Public Repos: ${userData!['public_repos'].toString()}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                             'Public Gists: ${userData!['public_gists'].toString()}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                             'Location: ${userData!['location'] ?? "NA"}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
 
                       ListTile(
                         title: Text(
                             'Followers: ${userData!['followers'].toString()}',
                             style:
-                                TextStyle(color: Colors.black, fontSize: 18.0)),
-                        trailing: Icon(Icons.arrow_circle_right_outlined),
+                                const TextStyle(color: Colors.black, fontSize: 18.0)),
+                        trailing: const Icon(Icons.arrow_circle_right_outlined),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -135,17 +136,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                             'Following: ${userData!['following'].toString()}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: sizedBoxHeight),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text('Last Updated: ${userData!['updated_at']}',
-                            style: TextStyle(fontSize: 18.0)),
+                            style: const TextStyle(fontSize: fontSize)),
                       ),
-                      SizedBox(height: 20.0)
-                      // Text('Surname: ${userData!['blog']}', style: TextStyle(fontSize: 18.0)),
-                      // ),
+                      const SizedBox(height: sizedBoxHeight)
                     ],
                   ),
                 ),

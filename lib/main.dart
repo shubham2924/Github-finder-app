@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'screens/singleTile.dart';
-import 'package:debounce_throttle/debounce_throttle.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,23 +47,58 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int currentPage=1;
+  final listViewController= ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  final Debouncer _debouncer = Debouncer(delay: Duration(seconds: 3));
-  String _searchQuery = 'shubham'; // Default value
+  final Debouncer _debouncer = Debouncer(delay: const Duration(seconds: 3));
+  String _searchQuery = 'john'; // Default value
+  bool _isLoading = false;
+  bool _isTextFieldCleared = false;
+  bool _isReachedEnd=false;
+  bool _isTextChanged=false;
 
   List<dynamic> items = [];
 
   Future<void> fetchData() async {
-    final response = await http
-        .get(Uri.parse('https://api.github.com/search/users?q=$_searchQuery'));
+    setState(() {
+      if(_isReachedEnd==true){
+        _isLoading = false;
+      }
+      else{
+        if(_isTextChanged==true){
+          _isLoading = true;
+        }
+      }
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    });
+    try {
+      final response = await http
+          .get(
+          Uri.parse('https://api.github.com/search/users?q=$_searchQuery&page=$currentPage'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          if(_isTextFieldCleared==true || _isTextChanged==true){
+            currentPage=1;
+            items = data['items'];
+          }
+          else {
+            items.addAll(data['items']);
+          }
+        });
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    }
+    catch (error) {
+      print(error);
+    }
+    finally{
       setState(() {
-        items = data['items'];
+        _isLoading = false;
+        currentPage++;
       });
-    } else {
-      throw Exception('Failed to fetch data');
     }
   }
 
@@ -73,16 +106,31 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     fetchData();
+    listViewController.addListener(() {
+      if(listViewController.position.maxScrollExtent==listViewController.offset){
+        setState(() {
+          _isReachedEnd=true;
+          _isTextChanged=false;
+          _isTextFieldCleared=false;
+        });
+        fetchData();
+      }
+    });
+  }
+
+  @override
+  void dispose(){
+    listViewController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    const inputBoxOutlineWidth=1.0;
     return Scaffold(
         appBar: AppBar(
           title: const Text('Github Users Finder'),
         ),
-        //     body: Center(
-        // ), // This trailing comma makes auto-formatting nicer for build methods.
         body: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -92,25 +140,31 @@ class _MyHomePageState extends State<MyHomePage> {
                   onChanged: (text) {
                     _debouncer.run(() {
                       setState(() {
+                        _isTextChanged=true;
+                        currentPage=1;
+                        _isLoading = true;
                         _searchQuery = text;
                         fetchData();
                       });
                     });
                   },
                   decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black, width: 1.0),
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: inputBoxOutlineWidth),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: inputBoxOutlineWidth),
                     ),
                     hintText: 'Search here',
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             onPressed: () {
                               _searchController.clear();
+                              setState(() {
+                                _isTextFieldCleared=true;
+                              });
                             },
-                            icon: Icon(Icons.clear),
+                            icon: const Icon(Icons.clear),
                           )
                         : null,
                   ),
@@ -119,10 +173,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 20,
                 ),
                 Expanded(
-                  child: items.isNotEmpty
+                  child: _isLoading? const Center(child: CircularProgressIndicator()):
+
+                  items.isNotEmpty
                       ? ListView.builder(
-                          itemCount: items.length,
-                          itemBuilder: (context, index) => Card(
+                    controller: listViewController,
+                          itemCount: items.length+1,
+                          itemBuilder: (context, index) {
+                            if(index<items.length){
+                            return Card(
                             key: ValueKey(items[index]["id"]),
                             color: Colors.white,
                             elevation: 4,
@@ -134,11 +193,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                     NetworkImage(items[index]['avatar_url']),
                               ),
                               title: Text(items[index]['login'],
-                                  style: TextStyle(color: Colors.black)),
+                                  style: const TextStyle(color: Colors.black)),
                               subtitle: Text(
-                                  '${items[index]["html_url"].toString()}',
-                                  style: TextStyle(color: Colors.black)),
-                              trailing: Icon(Icons.arrow_circle_right_outlined),
+                                  items[index]["html_url"].toString(),
+                                  style: const TextStyle(color: Colors.black)),
+                              trailing: const Icon(Icons.arrow_circle_right_outlined),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -151,7 +210,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                 );
                               },
                             ),
-                          ),
+                          );
+  }
+                            else{
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                  child: Center(child: CircularProgressIndicator())
+                              ) ;
+                            }
+                            },
                         )
 
                       : const Text(

@@ -1,5 +1,8 @@
-![Preview image](GithubUserFinderApp.png)
 # ❝ Github Finder App ❞
+
+![Preview image](app_preview.png)
+
+![Preview image](open_in_web_preview.png)
 
 ## About
 A flutter application which would let users help search and analyse Github users conveniently.
@@ -9,6 +12,8 @@ A flutter application which would let users help search and analyse Github users
 - [intl](https://pub.dev/packages/intl) - Provides internationalization and localization facilities, including message translation, plurals and genders, date/number formatting and parsing, and bidirectional text.
 - [debounce_throttle](https://pub.dev/packages/debounce_throttle) - A debouncer and throttle that works with Future, Stream, and callbacks.
 - [convert](https://pub.dev/packages/convert) - Contains encoders and decoders for converting between different data representations. It's the external counterpart of the dart:convert SDK library, and contains less-central APIs and APIs that need more flexible versioning.
+- [webview_flutter](https://pub.dev/packages/webview_flutter) - A Flutter plugin that provides a WebView widget.
+- [share_plus](https://pub.dev/packages/share_plus) - A Flutter plugin to share content from your Flutter app via the platform's share dialog.
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_flutter_app/screens/webViewScreen.dart';
 import 'dart:convert';
 import './followersScreen.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DetailsScreen extends StatefulWidget {
   final String login;
@@ -17,6 +19,11 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   Map<String, dynamic>? userData;
+
+  void _handleURLButtonPress(BuildContext context, String url) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => WebViewContainer(url)));
+  }
 
   @override
   void initState() {
@@ -54,6 +61,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('User Details'),
+            actions: [
+        IconButton(
+        icon: const Icon(
+        Icons.ios_share,
+            color: Color(0xFF2F2F2F),
+            size: 34.0),
+        onPressed: (){
+          Share.share('${userData!['html_url']}', subject: 'User Profile');
+          //subject is optional, and it is required for Email App.
+        }
+    )]
         ),
         body: userData == null
             ? const Center(child: CircularProgressIndicator())
@@ -144,7 +162,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         child: Text('Last Updated: ${userData!['updated_at']}',
                             style: const TextStyle(fontSize: fontSize)),
                       ),
-                      const SizedBox(height: sizedBoxHeight)
+                      const SizedBox(height: sizedBoxHeight),
+                      Container(
+                        alignment: Alignment.center,
+                        child: ElevatedButton(
+                            onPressed: () => _handleURLButtonPress(context, userData!['html_url']),
+                            child: const Text("Open in Web")),
+                      )
                     ],
                   ),
                 ),

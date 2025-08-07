@@ -25,7 +25,7 @@ https://www.youtube.com/shorts/deBIGS77SeY
 ```
 MIT License
 
-Copyright (c) 2021 Tanmay Patil.
+Copyright (c) 2021 Shubham Metkar.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
